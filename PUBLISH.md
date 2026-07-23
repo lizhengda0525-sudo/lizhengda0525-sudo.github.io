@@ -1,5 +1,4 @@
-# 发布说明
+# 鍙戝竷璇存槑
 
-本目录是“达的学习笔记”网站，部署到 <https://lizhengda0525-sudo.github.io/>。
-
-本地验证：`npm ci`、`npm run build`、`npm test`。提交并推送到 `main` 后，GitHub Actions 会自动发布 `out/` 中的静态网站。
+鏈洰褰曟槸鈥滆揪鐨勫涔犵瑪璁扳€濈綉绔欙紝閮ㄧ讲鍒?<https://lizhengda0525-sudo.github.io/>銆?
+鏈湴楠岃瘉锛歚npm ci`銆乣npm run build`銆乣npm test`銆傛彁浜ゅ苟鎺ㄩ€佸埌 `main` 鍚庯紝GitHub Actions 浼氳嚜鍔ㄥ彂甯?`dist/client/` 涓殑闈欐€佺綉绔欍€

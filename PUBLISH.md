@@ -2,7 +2,21 @@
 
 发布内容来自 `../03_publish`，静态资源来自 `../00_static/<文章名>`。同步脚本会把它们复制到 Hugo 网站目录；GitHub Actions 只构建已经提交的 `04_web` 仓库文件，不会读取本地工作区。
 
-从 `MyWeb` 根目录执行：
+## 本地预览
+
+如果要在浏览器里本地查看网站，从 `MyWeb` 根目录执行：
+
+```powershell
+Set-Location 04_web
+node scripts\sync-published.mjs
+hugo server --buildDrafts --buildFuture --disableFastRender
+```
+
+预览服务启动后，终端会显示本地访问入口，通常是 `http://localhost:1313/`。`hugo --minify` 只负责构建静态文件，不会启动本地浏览服务。
+
+## 正式构建
+
+确认预览无误后，再执行测试和构建：
 
 ```powershell
 Set-Location 04_web

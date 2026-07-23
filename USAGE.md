@@ -94,7 +94,7 @@ git push origin main
 | 归档与搜索页面 | `layouts/archives.html`、`layouts/search.html` |
 | 全站颜色、卡片、正文和响应式布局 | `assets/css/extended/knowledge-home.css` |
 | 主题切换、搜索、手机菜单和代码复制 | `assets/js/blog.js` |
-| 首页大图 | `static/images/site/study-hero.png` |
+| 首页大图 | `static/images/site/lake-hero.webp` |
 | “关于”页面文字 | `content/about.md` |
 
 例如，想改首页副标题，编辑 `hugo.toml` 中的这一行：
@@ -104,6 +104,8 @@ description = '把零散的思考，整理成可以回看的知识。'
 ```
 
 改完任何网站外观文件后，重新启动或刷新本地预览即可查看结果。对外观改动满意后，按“确认并部署”一节提交。
+
+首页封面使用 WebP，并在页面头部预加载；正文 Markdown 图片由 `layouts/_default/_markup/render-image.html` 自动加入延迟加载。替换封面时建议保持 WebP 小于 200 KB，避免再次拖慢首屏。
 
 ## 六、常见问题
 

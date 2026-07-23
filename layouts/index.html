@@ -5,8 +5,8 @@
   <section class="primary" aria-label="文章列表">
     <div class="post-list">
       {{- range $index, $post := $pages }}
-      {{- $cover := "/images/site/study-hero.png" -}}
-      {{- if eq $post.File.BaseFileName "git-learning-notes" }}{{ $cover = "/images/review/git-learning-notes/image-20260519214154717.png" }}{{ end -}}
+      {{- $cover := "/images/site/lake-hero.webp" -}}
+      {{- if eq $post.File.BaseFileName "git-learning-notes" }}{{ $cover = "/images/review/git-learning-notes/cover.webp" }}{{ end -}}
       {{- with $post.Params.cover.image }}{{ $cover = . }}{{ end -}}
       <article class="post-card {{ if eq (mod $index 2) 1 }}reverse{{ end }}">
         <a class="post-image" href="{{ $post.RelPermalink }}" style="background-image:url('{{ $cover | relURL }}')" aria-label="阅读《{{ $post.Title }}》"></a>
@@ -36,7 +36,7 @@
     </section>
     <a class="widget quick-search" href="{{ "/search/" | relLangURL }}"><span>⌕</span><div><strong>站内搜索</strong><small>按 Ctrl / ⌘ K 快速打开</small></div><b>→</b></a>
     <section class="widget announcement"><h2><span>♩</span> 公告</h2><p>欢迎来到达的学习笔记。这里沉淀 AI 工具、后端开发、开发工具和学习记录。</p></section>
-    <section class="widget recent"><h2><span>◷</span> 最新文章</h2>{{ range first 4 $pages }}<a href="{{ .RelPermalink }}"><i style="background-image:url('{{ if eq .File.BaseFileName "git-learning-notes" }}/images/review/git-learning-notes/image-20260519214154717.png{{ else }}/images/site/study-hero.png{{ end }}')"></i><span><strong>{{ .Title }}</strong><small>{{ .Date.Format "2006-01-02" }}</small></span></a>{{ end }}</section>
+    <section class="widget recent"><h2><span>◷</span> 最新文章</h2>{{ range first 4 $pages }}<a href="{{ .RelPermalink }}"><i style="background-image:url('{{ if eq .File.BaseFileName "git-learning-notes" }}/images/review/git-learning-notes/cover.webp{{ else }}/images/site/lake-hero.webp{{ end }}')"></i><span><strong>{{ .Title }}</strong><small>{{ .Date.Format "2006-01-02" }}</small></span></a>{{ end }}</section>
     <section class="widget tags-widget"><h2><span>#</span> 标签</h2><div>{{ range first 12 site.Taxonomies.tags.ByCount }}<a href="{{ .Page.RelPermalink }}">{{ .Page.LinkTitle }}</a>{{ end }}</div></section>
   </aside>
 </div>

@@ -9,10 +9,11 @@
   <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ $displayTitle }} · {{ site.Title }}{{ end }}</title>
   <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Summary }}{{ . | plainify | truncate 150 }}{{ else }}{{ site.Params.description }}{{ end }}{{ end }}">
   <link rel="icon" href="{{ "/favicon.svg" | relURL }}" type="image/svg+xml">
+  <link rel="preload" as="image" href="{{ "/images/site/lake-hero.webp" | relURL }}" type="image/webp" fetchpriority="high">
   <meta property="og:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ $displayTitle }} · {{ site.Title }}{{ end }}">
   <meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ site.Params.description }}{{ end }}">
   <meta property="og:type" content="{{ if and (eq .Kind "page") (eq .Section "posts") }}article{{ else }}website{{ end }}">
-  <meta property="og:image" content="{{ "/images/site/study-hero.png" | absURL }}">
+  <meta property="og:image" content="{{ "/images/site/lake-hero-og.jpg" | absURL }}">
   <script>(function(){var saved=localStorage.getItem('da-learning-notes-theme');var dark=saved==='dark'||(!saved&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.theme=dark?'dark':'light';})();</script>
   {{- $style := resources.Get "css/extended/knowledge-home.css" | minify | fingerprint -}}
   <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">

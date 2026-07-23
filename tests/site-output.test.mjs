@@ -21,6 +21,9 @@ test('homepage renders migrated identity and all five posts', () => {
   assert.match(html, /关注我的 GitHub/);
   for (const slug of slugs) assert.match(html, new RegExp(`/posts/${slug}/`));
   assert.doesNotMatch(html, /一叶知舟|舟行|PaperMod/);
+  assert.match(html, /lake-hero\.webp/);
+  assert.match(html, /rel=preload[^>]+lake-hero\.webp/);
+  assert.doesNotMatch(html, /study-hero\.png|image-20260519214154717\.png/);
 });
 
 test('all navigation pages and article pages are generated', () => {
@@ -62,9 +65,18 @@ test('theme, keyboard search, code copy and responsive styles are bundled', () =
   assert.match(js, /ctrlKey/);
 });
 
-test('migrated images and social assets are present', () => {
-  const images = fs.readdirSync(path.join(output, 'images', 'review', 'git-learning-notes')).filter((name) => name.endsWith('.png'));
+test('images use lightweight hero assets and lazy article loading', () => {
+  const imageDir = path.join(output, 'images', 'review', 'git-learning-notes');
+  const images = fs.readdirSync(imageDir).filter((name) => name.endsWith('.png'));
   assert.equal(images.length, 40);
-  assert.ok(fs.existsSync(path.join(output, 'images', 'site', 'study-hero.png')));
+  const hero = path.join(output, 'images', 'site', 'lake-hero.webp');
+  const social = path.join(output, 'images', 'site', 'lake-hero-og.jpg');
+  const cover = path.join(imageDir, 'cover.webp');
+  assert.ok(fs.statSync(hero).size < 200_000, 'hero should stay below 200 KB');
+  assert.ok(fs.statSync(social).size < 220_000, 'social image should stay below 220 KB');
+  assert.ok(fs.statSync(cover).size < 60_000, 'homepage thumbnail should stay below 60 KB');
+  const article = read('posts', 'git-learning-notes', 'index.html');
+  assert.ok((article.match(/loading=lazy/g) || []).length >= 30, 'article images should be lazy-loaded');
+  assert.match(article, /decoding=async/);
   assert.ok(fs.existsSync(path.join(output, 'favicon.svg')));
 });

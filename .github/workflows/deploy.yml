@@ -27,6 +27,8 @@ jobs:
         with:
           hugo-version: 'latest'
           extended: true
+      - name: Verify site output
+        run: node --test tests/site-output.test.mjs
       - name: Build
         run: hugo --minify
       - name: Upload artifact

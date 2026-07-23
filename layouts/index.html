@@ -1,0 +1,43 @@
+{{ define "main" }}
+{{- $pages := where site.RegularPages "Section" "posts" -}}
+{{- $pages = $pages.ByDate.Reverse -}}
+<div class="layout">
+  <section class="primary" aria-label="文章列表">
+    <div class="post-list">
+      {{- range $index, $post := $pages }}
+      {{- $cover := "/images/site/study-hero.png" -}}
+      {{- if eq $post.File.BaseFileName "git-learning-notes" }}{{ $cover = "/images/review/git-learning-notes/image-20260519214154717.png" }}{{ end -}}
+      {{- with $post.Params.cover.image }}{{ $cover = . }}{{ end -}}
+      <article class="post-card {{ if eq (mod $index 2) 1 }}reverse{{ end }}">
+        <a class="post-image" href="{{ $post.RelPermalink }}" style="background-image:url('{{ $cover | relURL }}')" aria-label="阅读《{{ $post.Title }}》"></a>
+        <div class="post-info">
+          <h2><a class="post-title" href="{{ $post.RelPermalink }}">{{ $post.Title }}</a></h2>
+          <div class="meta">◷ {{ $post.Date.Format "2006-01-02" }}<span>│</span>{{ with $post.GetTerms "categories" }}▣ <a href="{{ (index . 0).RelPermalink }}">{{ (index . 0).LinkTitle }}</a><span>│</span>{{ end }}{{ $post.ReadingTime }} 分钟</div>
+          <p>{{ with $post.Description }}{{ . }}{{ else }}{{ $post.Summary | plainify | htmlUnescape | truncate 150 }}{{ end }}</p>
+          <a class="read-more" href="{{ $post.RelPermalink }}">阅读全文 <span>→</span></a>
+        </div>
+      </article>
+      {{- end }}
+    </div>
+  </section>
+
+  <aside>
+    <section class="widget profile-card">
+      <div class="profile-cover"></div>
+      <div class="avatar">达</div>
+      <h2>达</h2>
+      <p>技术学习、工具实践与持续思考</p>
+      <div class="stats">
+        <a href="{{ "/archives/" | relLangURL }}"><strong>{{ len $pages }}</strong><span>文章</span></a>
+        <a href="{{ "/tags/" | relLangURL }}"><strong>{{ len site.Taxonomies.tags }}</strong><span>标签</span></a>
+        <a href="{{ "/categories/" | relLangURL }}"><strong>{{ len site.Taxonomies.categories }}</strong><span>分类</span></a>
+      </div>
+      <a class="follow" href="https://github.com/lizhengda0525-sudo" target="_blank" rel="noreferrer">关注我的 GitHub</a>
+    </section>
+    <a class="widget quick-search" href="{{ "/search/" | relLangURL }}"><span>⌕</span><div><strong>站内搜索</strong><small>按 Ctrl / ⌘ K 快速打开</small></div><b>→</b></a>
+    <section class="widget announcement"><h2><span>♩</span> 公告</h2><p>欢迎来到达的学习笔记。这里沉淀 AI 工具、后端开发、开发工具和学习记录。</p></section>
+    <section class="widget recent"><h2><span>◷</span> 最新文章</h2>{{ range first 4 $pages }}<a href="{{ .RelPermalink }}"><i style="background-image:url('{{ if eq .File.BaseFileName "git-learning-notes" }}/images/review/git-learning-notes/image-20260519214154717.png{{ else }}/images/site/study-hero.png{{ end }}')"></i><span><strong>{{ .Title }}</strong><small>{{ .Date.Format "2006-01-02" }}</small></span></a>{{ end }}</section>
+    <section class="widget tags-widget"><h2><span>#</span> 标签</h2><div>{{ range first 12 site.Taxonomies.tags.ByCount }}<a href="{{ .Page.RelPermalink }}">{{ .Page.LinkTitle }}</a>{{ end }}</div></section>
+  </aside>
+</div>
+{{ end }}

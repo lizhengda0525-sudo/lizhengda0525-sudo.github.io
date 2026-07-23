@@ -1,0 +1,67 @@
+{{- $displayTitle := .Title -}}
+{{- if eq .Kind "taxonomy" -}}{{- if eq .Data.Plural "categories" -}}{{- $displayTitle = "分类" -}}{{- else -}}{{- $displayTitle = "标签" -}}{{- end -}}{{- end -}}
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#376bbf">
+  <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ $displayTitle }} · {{ site.Title }}{{ end }}</title>
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Summary }}{{ . | plainify | truncate 150 }}{{ else }}{{ site.Params.description }}{{ end }}{{ end }}">
+  <link rel="icon" href="{{ "/favicon.svg" | relURL }}" type="image/svg+xml">
+  <meta property="og:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ $displayTitle }} · {{ site.Title }}{{ end }}">
+  <meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ site.Params.description }}{{ end }}">
+  <meta property="og:type" content="{{ if and (eq .Kind "page") (eq .Section "posts") }}article{{ else }}website{{ end }}">
+  <meta property="og:image" content="{{ "/images/site/study-hero.png" | absURL }}">
+  <script>(function(){var saved=localStorage.getItem('da-learning-notes-theme');var dark=saved==='dark'||(!saved&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.theme=dark?'dark':'light';})();</script>
+  {{- $style := resources.Get "css/extended/knowledge-home.css" | minify | fingerprint -}}
+  <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
+</head>
+<body data-kind="{{ .Kind }}" data-layout="{{ .Layout }}">
+  <header class="hero {{ if .IsHome }}hero-full{{ else }}hero-compact{{ end }}">
+    <div class="hero-shade"></div>
+    <nav class="top-nav" aria-label="主导航">
+      <a class="brand" href="{{ "/" | relLangURL }}">{{ site.Title }}</a>
+      <div class="nav-actions">
+        <a class="nav-search" href="{{ "/search/" | relLangURL }}" aria-label="搜索文章">⌕ <span>搜索</span><kbd>⌘K</kbd></a>
+        <div class="desktop-menu">
+          {{- range site.Menus.main }}
+          {{- if ne .Name "搜索" }}<a href="{{ .URL | relLangURL }}"><b>{{ if eq .Name "首页" }}⌂{{ else if eq .Name "归档" }}◷{{ else if eq .Name "分类" }}▣{{ else if eq .Name "标签" }}#{{ else }}♡{{ end }}</b>{{ .Name }}</a>{{ end -}}
+          {{- end }}
+        </div>
+        <button class="icon-button theme-toggle" type="button" aria-label="切换深浅色">☾</button>
+        <button class="menu-button" type="button" aria-label="打开菜单" aria-expanded="false">☰</button>
+      </div>
+    </nav>
+    <div class="mobile-menu" hidden>
+      {{- range site.Menus.main }}<a href="{{ .URL | relLangURL }}">{{ .Name }}</a>{{ end -}}
+    </div>
+    {{- if .IsHome }}
+    <div class="hero-copy">
+      <span class="eyebrow">PERSONAL KNOWLEDGE BASE</span>
+      <h1>{{ site.Title }}</h1>
+      <p>{{ site.Params.description }}</p>
+      <a class="social-dot" href="https://github.com/lizhengda0525-sudo" target="_blank" rel="noreferrer" aria-label="GitHub">GH</a>
+    </div>
+    <a class="scroll-cue" href="#main" aria-label="向下浏览">⌄</a>
+    {{- else }}
+    <div class="compact-title">
+      <span>{{ if eq .Kind "taxonomy" }}专题导航{{ else if eq .Kind "term" }}专题文章{{ else if eq .Layout "archives" }}ARCHIVES{{ else if eq .Layout "search" }}SEARCH{{ else if eq .Section "posts" }}ARTICLE{{ else }}{{ upper .Kind }}{{ end }}</span>
+      <h1>{{ $displayTitle }}</h1>
+    </div>
+    {{- end }}
+  </header>
+
+  <main id="main">{{ block "main" . }}{{ end }}</main>
+
+  <footer>
+    <div class="sail-mark">◢</div>
+    <p>写下来的知识，会在未来的某一刻重新照亮当下。</p>
+    <small>© {{ now.Year }} {{ site.Title }} · 持续学习，持续记录</small>
+  </footer>
+
+  {{- $script := resources.Get "js/blog.js" | minify | fingerprint -}}
+  <script src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}" defer></script>
+  {{ block "scripts" . }}{{ end }}
+</body>
+</html>

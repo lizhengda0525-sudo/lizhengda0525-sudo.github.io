@@ -87,7 +87,7 @@ export function BlogShell({ view = "home", slug }: { view?: View; slug?: string 
 
     <main id="main" className="layout">
       <section className="primary">{renderView(view, currentPost, filterName)}</section>
-      <Aside onSearch={() => setSearchOpen(true)} />
+      <Aside onSearch={() => setSearchOpen(true)} toc={view === "post" ? currentPost?.toc : undefined} />
     </main>
 
     <footer><div className="sail-mark">◢</div><p>写下来的知识，会在未来的某一刻重新照亮当下。</p><small>© 2026 达的学习笔记 · 持续学习，持续记录</small></footer>
@@ -130,7 +130,8 @@ function PostCard({ post, reverse }: { post: BlogPost; reverse: boolean }) {
   </article>;
 }
 
-function Aside({ onSearch }: { onSearch: () => void }) {
+function Aside({ onSearch, toc }: { onSearch: () => void; toc?: BlogPost["toc"] }) {
+  if (toc) return <aside className="article-aside"><ArticleToc toc={toc} /></aside>;
   return <aside>
     <div className="widget profile-card"><div className="profile-cover" /><div className="avatar">达</div><h3>达</h3><p>技术学习、工具实践与持续思考</p><div className="stats"><Link href="/archives"><strong>{posts.length}</strong><span>文章</span></Link><Link href="/tags"><strong>{allTags.length}</strong><span>标签</span></Link><Link href="/categories"><strong>{allCategories.length}</strong><span>分类</span></Link></div><a className="follow" href="https://github.com/lizhengda0525-sudo" target="_blank" rel="noreferrer">关注我的 GitHub</a></div>
     <button className="widget quick-search" onClick={onSearch}><span>⌕</span><div><strong>站内搜索</strong><small>按 ⌘ K 快速唤起</small></div><b>→</b></button>
@@ -138,6 +139,26 @@ function Aside({ onSearch }: { onSearch: () => void }) {
     <div className="widget recent"><h3><span>◷</span> 最新文章</h3>{posts.slice(0, 4).map((post) => <Link key={post.slug} href={`/post/${post.slug}`}><i style={{ backgroundImage: `url(${post.image})` }} /><span><strong>{post.title}</strong><small>{post.date}</small></span></Link>)}</div>
     <div className="widget tags-widget"><h3><span>#</span> 标签</h3><div>{allTags.slice(0, 10).map((tag) => <Link key={tag} href={`/tags?name=${encodeURIComponent(tag)}`}>{tag}</Link>)}</div></div>
   </aside>;
+}
+
+function ArticleToc({ toc }: { toc: BlogPost["toc"] }) {
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(() => Object.fromEntries(toc.map((item) => [item.id, item.level <= 2])));
+  const hasChildren = (index: number) => toc[index + 1]?.level > toc[index].level;
+  const isVisible = (index: number) => {
+    const level = toc[index].level;
+    for (let parent = index - 1; parent >= 0; parent -= 1) {
+      if (toc[parent].level < level) return expanded[toc[parent].id] !== false;
+    }
+    return true;
+  };
+
+  return <nav className="article-toc article-toc-sidebar" aria-label={"\u6587\u7ae0\u76ee\u5f55"}>
+    <strong>{"\u76ee\u5f55"}</strong>
+    <div className="toc-tree">{toc.map((item, index) => isVisible(index) && <div className={`toc-item toc-level-${item.level}`} key={item.id}>
+      {hasChildren(index) && <button type="button" className="toc-toggle" onClick={() => setExpanded((current) => ({ ...current, [item.id]: !current[item.id] }))} aria-label={expanded[item.id] === false ? "\u5c55\u5f00\u5b50\u76ee\u5f55" : "\u6298\u53e0\u5b50\u76ee\u5f55"} aria-expanded={expanded[item.id] !== false}>{expanded[item.id] === false ? "+" : "-"}</button>}
+      <a href={`#${item.id}`}>{item.title}</a>
+    </div>)}</div>
+  </nav>;
 }
 
 function Article({ post }: { post: BlogPost }) {
@@ -171,7 +192,6 @@ function Article({ post }: { post: BlogPost }) {
   return <article className="article-page page-card">
     <div className="article-meta">{post.date} · {post.category} · {post.read} · {post.wordCount} 字</div>
     <p className="lead">{post.excerpt}</p>
-    {post.toc.length > 0 && <nav className="article-toc" aria-label="文章目录"><strong>目录</strong>{post.toc.map((item) => <a className={`toc-level-${item.level}`} href={`#${item.id}`} key={item.id}>{item.title}</a>)}</nav>}
     <div ref={contentRef} className="markdown-body" dangerouslySetInnerHTML={{ __html: post.html }} />
     <div className="license"><strong>文章说明</strong><p>本文迁移自“达的学习笔记”原博客，正文与配图均保持原始内容。</p></div>
     <div className="post-tags">{post.tags.map((tag) => <Link href={`/tags?name=${encodeURIComponent(tag)}`} key={tag}>#{tag}</Link>)}</div>

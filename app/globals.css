@@ -328,3 +328,27 @@ html[data-theme="light"] .markdown-body code { color: inherit; background: #f3f4
 html[data-theme="light"] .markdown-body pre { color: #333; background: #f8f8f8; box-shadow: none; }
 html[data-theme="light"] .markdown-body th, html[data-theme="light"] .markdown-body td { padding: 6px 13px; border-color: #dfe2e5; }
 html[data-theme="light"] .markdown-body th, html[data-theme="light"] .markdown-body tr:nth-child(2n) { background: #f8f8f8; }
+
+
+/* Restore semantic Markdown lists after the global CSS reset. */
+.markdown-body ul { list-style: disc outside; }
+.markdown-body ol { list-style: decimal outside; }
+.markdown-body ul ul { list-style-type: circle; }
+.markdown-body ul ul ul { list-style-type: square; }
+.markdown-body ol ol { list-style-type: lower-alpha; }
+.markdown-body li::marker { color: var(--blue-deep); font-weight: 700; }
+
+/* Article pages replace the generic sidebar with an expandable table of contents. */
+.article-aside { position: sticky; top: 20px; }
+.article-toc-sidebar { margin: 0; max-height: calc(100vh - 40px); overflow: auto; }
+.toc-tree { display: grid; gap: 2px; }
+.toc-item { display: flex; align-items: flex-start; gap: 5px; min-width: 0; }
+.toc-item a { flex: 1; min-width: 0; padding: 4px 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.toc-item a:hover { color: var(--blue); }
+.toc-toggle { flex: 0 0 18px; width: 18px; height: 20px; padding: 0; color: var(--blue); border: 0; background: transparent; cursor: pointer; font-weight: 700; line-height: 1; }
+.toc-level-2 { padding-left: 0; }
+.toc-level-3 { padding-left: 16px; }
+.toc-level-4 { padding-left: 32px; }
+.toc-level-5 { padding-left: 48px; }
+.toc-level-6 { padding-left: 64px; }
+@media (max-width: 1000px) { .article-aside { position: static; } .article-toc-sidebar { max-height: none; } }

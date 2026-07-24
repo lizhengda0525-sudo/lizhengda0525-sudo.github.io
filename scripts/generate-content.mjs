@@ -62,7 +62,7 @@ function renderMarkdown(markdown) {
   const rendered = marked.parse(markdown);
   const used = new Map();
   const toc = [];
-  const html = rendered.replace(/<h([2-3])>([\s\S]*?)<\/h\1>/g, (_match, level, body) => {
+  const html = rendered.replace(/<h([1-6])>([\s\S]*?)<\/h\1>/g, (_match, level, body) => {
     const base = slugifyHeading(body);
     const count = used.get(base) ?? 0;
     used.set(base, count + 1);

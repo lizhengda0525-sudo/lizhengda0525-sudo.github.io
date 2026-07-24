@@ -27,7 +27,7 @@ test("server-renders the migrated blog homepage", async () => {
 });
 
 test("all public pages and all five migrated articles render", async () => {
-  const paths = ["/archives", "/categories", "/tags", "/about", ...slugs.map((slug) => `/post/${slug}`)];
+  const paths = ["/archives/", "/categories/", "/tags/", "/about/", ...slugs.map((slug) => `/post/${slug}/`)];
   for (const path of paths) {
     const response = await render(path);
     assert.equal(response.status, 200, path);
@@ -65,6 +65,8 @@ test("includes full-text search, theme, responsive article styles and social pre
   assert.match(shell, /event\.ctrlKey \|\| event\.metaKey/);
   assert.match(css, /html\[data-theme="dark"\]/);
   assert.match(css, /\.markdown-body table/);
+  assert.match(css, /list-style: disc outside/);
+  assert.match(shell, /ArticleToc/);
   assert.match(css, /@media \(max-width: 760px\)/);
   assert.match(layout, /达的学习笔记/);
   assert.match(layout, /\/og\.jpg/);

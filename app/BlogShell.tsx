@@ -142,16 +142,17 @@ function Aside({ onSearch, toc }: { onSearch: () => void; toc?: BlogPost["toc"] 
 }
 
 type TocItem = BlogPost["toc"][number];
-type TocNode = TocItem & { children: TocNode[] };
+type TocNode = TocItem & { children: TocNode[]; outline: string };
 
 function buildTocTree(toc: TocItem[]): TocNode[] {
   const roots: TocNode[] = [];
   const stack: TocNode[] = [];
   for (const item of toc) {
-    const node: TocNode = { ...item, children: [] };
     while (stack.length && stack[stack.length - 1].level >= item.level) stack.pop();
-    if (stack.length) stack[stack.length - 1].children.push(node);
-    else roots.push(node);
+    const siblings = stack.length ? stack[stack.length - 1].children : roots;
+    const outline = stack.length ? `${stack[stack.length - 1].outline}.${siblings.length + 1}` : String(siblings.length + 1);
+    const node: TocNode = { ...item, children: [], outline };
+    siblings.push(node);
     stack.push(node);
   }
   return roots;
@@ -185,20 +186,23 @@ function ArticleToc({ toc }: { toc: BlogPost["toc"] }) {
     if (ancestors.length) setExpanded((current) => ({ ...current, ...Object.fromEntries(ancestors.map((id) => [id, true])) }));
   }, [activeId, toc]);
 
+  const toggleAll = () => {
+    const shouldExpand = toc.some((item) => expanded[item.id] === false);
+    setExpanded(Object.fromEntries(toc.map((item) => [item.id, shouldExpand])));
+  };
   const renderNodes = (nodes: TocNode[]) => <ol>{nodes.map((node) => {
-    const hasChildren = node.children.length > 0;
     const isOpen = expanded[node.id] !== false;
     return <li className={`toc-item toc-level-${node.level}`} key={node.id}>
       <div className="toc-row">
-        {hasChildren ? <button type="button" className="toc-toggle" onClick={() => setExpanded((current) => ({ ...current, [node.id]: !isOpen }))} aria-label={isOpen ? "Collapse section" : "Expand section"} aria-expanded={isOpen}>{isOpen ? "-" : "+"}</button> : <span className="toc-spacer" />}
+        <span className="toc-number">{node.outline}.</span>
         <a className={`toc-link ${activeId === node.id ? "active" : ""}`} href={`#${node.id}`} onClick={() => setActiveId(node.id)}>{node.title}</a>
       </div>
-      {hasChildren && isOpen && renderNodes(node.children)}
+      {node.children.length > 0 && isOpen && renderNodes(node.children)}
     </li>;
   })}</ol>;
 
   return <nav className="article-toc article-toc-sidebar" aria-label="Article contents">
-    <div className="toc-heading"><strong>{"\u76ee\u5f55"}</strong><span>{toc.length}</span></div>
+    <div className="toc-heading"><button type="button" className="toc-master-toggle" onClick={toggleAll} aria-label="Toggle contents"><i /><i /><i /></button><strong>{"\u76ee\u5f55"}</strong><span>{toc.length}</span></div>
     <div className="toc-content">{renderNodes(tree)}</div>
   </nav>;
 }

@@ -413,3 +413,50 @@ html[data-theme="light"] .article-toc-sidebar .toc-link:hover, html[data-theme="
 .article-toc-sidebar .toc-level-4 > .toc-row .toc-link,
 .article-toc-sidebar .toc-level-5 > .toc-row .toc-link,
 .article-toc-sidebar .toc-level-6 > .toc-row .toc-link { font-size: 13px; }
+
+
+/* Compact outline: each heading owns one full row; nesting is a small, fixed cue. */
+.article-toc-sidebar .toc-content { padding: 6px 14px 8px; }
+.article-toc-sidebar .toc-item > ol,
+.article-toc-sidebar .toc-level-1 > ol,
+.article-toc-sidebar .toc-level-2 > ol,
+.article-toc-sidebar .toc-level-3 > ol,
+.article-toc-sidebar .toc-level-4 > ol,
+.article-toc-sidebar .toc-level-5 > ol {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.article-toc-sidebar .toc-row {
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px;
+  min-width: 0;
+  padding: 1px 0;
+}
+.article-toc-sidebar .toc-level-1 > .toc-row { padding-left: 0; }
+.article-toc-sidebar .toc-level-2 > .toc-row { padding-left: 12px; }
+.article-toc-sidebar .toc-level-3 > .toc-row { padding-left: 24px; }
+.article-toc-sidebar .toc-level-4 > .toc-row { padding-left: 36px; }
+.article-toc-sidebar .toc-level-5 > .toc-row { padding-left: 48px; }
+.article-toc-sidebar .toc-level-6 > .toc-row { padding-left: 60px; }
+.article-toc-sidebar .toc-number {
+  padding: 5px 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.article-toc-sidebar .toc-link,
+.article-toc-sidebar .toc-level-3 > .toc-row .toc-link,
+.article-toc-sidebar .toc-level-4 > .toc-row .toc-link,
+.article-toc-sidebar .toc-level-5 > .toc-row .toc-link,
+.article-toc-sidebar .toc-level-6 > .toc-row .toc-link {
+  min-width: 0;
+  margin: 0;
+  padding: 5px 7px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+}

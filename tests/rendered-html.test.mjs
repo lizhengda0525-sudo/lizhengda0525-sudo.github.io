@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import test from "node:test";
 
-const slugs = ["20260724-liang-wenfeng-investor-agi", "gpt-5-6", "git-learning-notes", "fastapi-basics", "agent-blog-tutorial", "hello"];
+const slugs = ["skills-behavior-system", "20260724-liang-wenfeng-investor-agi", "gpt-5-6", "git-learning-notes", "fastapi-basics", "agent-blog-tutorial", "hello"];
 
 async function render(path = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -26,7 +26,7 @@ test("server-renders the migrated blog homepage", async () => {
   assert.doesNotMatch(html, /一叶知舟|舟行|codex-preview|Building your site/i);
 });
 
-test("all public pages and all six migrated articles render", async () => {
+test("all public pages and all seven migrated articles render", async () => {
   const paths = ["/archives/", "/categories/", "/tags/", "/about/", ...slugs.map((slug) => `/post/${slug}/`)];
   for (const path of paths) {
     const response = await render(path);
@@ -43,7 +43,7 @@ test("generated content includes every source post and migrated image", async ()
     readdir(new URL("../content/posts/", import.meta.url)),
     readdir(new URL("../public/images/review/git-learning-notes/", import.meta.url)),
   ]);
-  assert.equal(sourceFiles.filter((name) => name.endsWith(".md")).length, 6);
+  assert.equal(sourceFiles.filter((name) => name.endsWith(".md")).length, 7);
   assert.equal(imageFiles.filter((name) => name.endsWith(".png")).length, 40);
   assert.equal(imageFiles.filter((name) => name.endsWith(".webp")).length, 40);
   for (const slug of slugs) assert.match(generated, new RegExp(`"slug": "${slug}"`));

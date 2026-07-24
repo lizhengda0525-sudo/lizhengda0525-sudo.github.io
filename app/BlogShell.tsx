@@ -18,7 +18,8 @@ const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)));
 const allCategories = Array.from(new Set(posts.flatMap((post) => post.categories)));
 
 export function BlogShell({ view = "home", slug }: { view?: View; slug?: string }) {
-  const [dark, setDark] = useState(false);
+  // Blue Topaz is the default; choosing GitHub light is retained locally.
+  const [dark, setDark] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -26,7 +27,7 @@ export function BlogShell({ view = "home", slug }: { view?: View; slug?: string 
 
   useEffect(() => {
     const saved = localStorage.getItem("da-learning-notes-theme");
-    const shouldDark = saved === "dark" || (!saved && matchMedia("(prefers-color-scheme: dark)").matches);
+    const shouldDark = saved !== "light";
     setDark(shouldDark);
     document.documentElement.dataset.theme = shouldDark ? "dark" : "light";
     setFilterName(new URLSearchParams(window.location.search).get("name") ?? "");

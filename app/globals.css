@@ -417,6 +417,10 @@ html[data-theme="light"] .article-toc-sidebar .toc-link:hover, html[data-theme="
 
 /* Compact outline: each heading owns one full row; nesting is a small, fixed cue. */
 .article-toc-sidebar .toc-content { padding: 6px 14px 8px; }
+.article-toc-sidebar .toc-item {
+  display: block;
+  min-width: 0;
+}
 .article-toc-sidebar .toc-item > ol,
 .article-toc-sidebar .toc-level-1 > ol,
 .article-toc-sidebar .toc-level-2 > ol,

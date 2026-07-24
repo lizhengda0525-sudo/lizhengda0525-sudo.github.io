@@ -34,6 +34,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Codex Sites hosting config is not part of this site's publish workflow.
+/.openai/hosting.json
+
 # typescript
 next-env.d.ts
 /dist/

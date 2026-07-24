@@ -155,6 +155,278 @@ export const posts: BlogPost[] = [
     ]
   },
   {
+    "slug": "docker-learning-notes",
+    "title": "Docker 学习笔记：从入门到日常实战",
+    "date": "2026-07-24",
+    "category": "开发工具",
+    "categories": [
+      "开发工具"
+    ],
+    "tags": [
+      "Docker",
+      "容器",
+      "DevOps"
+    ],
+    "image": "/images/site/covers/article-cover-2.jpeg",
+    "excerpt": "一份面向日常开发的 Docker 学习笔记，覆盖常用命令、容器生命周期、镜像与 Dockerfile、网络存储、Compose 以及基础原理。",
+    "read": "7 分钟",
+    "wordCount": 3140,
+    "searchText": "Docker 学习笔记：从入门到日常实战 一份面向日常开发的 Docker 学习笔记，覆盖常用命令、容器生命周期、镜像与 Dockerfile、网络存储、Compose 以及基础原理。 开发工具 Docker 容器 DevOps 40分钟的Docker实战攻略，一期视频精通Docker 哔哩哔哩 bilibili B站应该没有这么细致的docker容器教学视频，从零基础入门到实战，不妨来看看 哔哩哔哩 bilibili Get started Docker Docs Docker 学习笔记 目录 速查表：日常开发常用指令 第一部分：理解 Docker 第二部分：单人本地最小闭环 第三部分：容器生命周期管理 第四部分：镜像管理与 Dockerfile 第五部分：网络与存储 第六部分：容器编排 (Compose) 第七部分：急救工具箱与运维 第八部分：原理与进阶 速查表：日常开发常用指令 0. 安装与配置（只需一次） → 详见 第二部分：安装 1. 镜像操作 → 详见 第四部分：镜像管理 2. 容器运行（最高频） → 详见 第三部分：容器运行 3. 运维与调试 → 详见 第七部分：急救工具箱 4. 编排与网络 → 详见 第六部分：容器编排 · 第五部分：网络 第一部分：理解 Docker Docker 的设计理念 Docker 引入了 “轻量级虚拟机快递员” 的隐喻。你的目标是把“包裹”（应用代码）和“环境”（系统库、依赖）一起打包成一个标准化的单元（镜像），扔给快递员（Docker Engine），让他送到任何服务器上都能直接跑起来。 基于这种设计，Docker 解决了三个核心痛点： 解决“在我电脑上能跑”的问题 ：通过操作系统层面的虚拟化，实现环境隔离与一致性。 极速启动与轻量级 ：相比传统虚拟机，Docker 容器共享宿主机内核，秒级启动，资源占用极低。 标准化交付 ：一次构建，到处运行（Build Once, Run Anywhere）。 核心概念类比 概念 英文 类比含义 镜像 Image “程序安装包”或“类”，是只读的模板 容器 Container “正在运行的软件”或“实例”，是镜像跑起来后的动态环境 Dockerfile Dockerfile “制作图纸”，列出了镜像是如何一步步构建出来的 仓库 Registry “应用商店”，存放镜像的地方（主要是 Docker Hub） 关系总结 ：我们用 Dockerfile 制作出 镜像 ，把镜像存到 仓库 ，最后通过 docker run 把镜像变成 容器 跑起来。 Docker 与虚拟机的区别 用容器化技术，给应用程序封装独立的运行环境。Docker 容器之间共享一个系统内核，而每个虚拟机都包含一个操作系统的完整内核。因此，Docker 容器比虚拟机更加轻量级，启动速度更快。 第二部分：单人本地最小闭环 这一部分的目标：走完 install → pull → run → inspect 的完整循环，让你能独立用 Docker 跑起一个服务。 安装 腾讯云/Ubuntu 安装流程 1. 清理可能冲突的包 2. 更新系统包索引并安装依赖 3. 导入 Docker GPG 密钥（使用腾讯云镜像） 4. 添加 Docker APT 源 5. 安装 Docker 及其核心组件 第一次运行：Hello World 看到 \"Hello from Docker!\" 就算通关。这证明你的 Docker Engine 已经正常工作，并能从 Docker Hub 拉取镜像。 第三部分：容器生命周期管理 run：创建并运行容器 这是 Docker 最核心的指令。如果本地没有镜像，它会自动先执行 pull 。 常用参数详解 d：后台运行 (Detached mode) p：端口映射 (Port) 每个 Docker 容器都运行在一个独立的网络环境中，默认情况下外部无法访问。我们需要配置 p 将宿主机的端口转发到容器内部。 e：环境变量 (Environment) 在启动时传入配置信息（如数据库密码）。具体参数需查阅 Docker Hub 官方文档。 name：自定义容器名字 容器的名字和容器 ID 是等价的，但名字更好记。 restart：重启策略 it & rm：临时调试 运维与状态查询 ps：查看进程状态 start/stop/create：启停控制 create ：只创建容器但不启动。 start/stop/restart ：启动、停止或重启已经创建的容器。 第四部分：镜像管理与 Dockerfile 镜像管理 (Images) pull：拉取镜像 跨平台支持 ： docker pull platform=xxx nginx 。一般情况下默认拉取最适合的 CPU 架构。 images & rmi：列出与删除 Dockerfile 制作 Dockerfile 是镜像的构建蓝图。 40分钟的Docker实战攻略，一期视频精通Docker 哔哩哔哩 bilibili 26:33 Container images are composed of layers. And each of these layers, once created, are immutable. Dockerfile 通常会按照以下步骤编写： 1. 确定基础镜像。 2. 安装应用程序依赖。 3. 复制相关源代码和二进制文件。 4. 配置最终镜像。 Dockerfile 常见指令 FROM ：指定构建镜像时使用的基础镜像，例如 FROM node:22 alpine 。 WORKDIR ：设置镜像中的工作目录，后续命令会在该目录下执行，例如 WORKDIR /app 。 COPY ：将宿主机中的文件或目录复制到镜像中，例如 COPY . /app 。 RUN ：在构建镜像时执行指定命令，通常用于安装软件或应用依赖，例如 RUN yarn install production 。 ENV ：设置容器运行时可以使用的环境变量，例如 ENV APP ENV production 。 EXPOSE ：声明容器应用计划使用的端口，例如 EXPOSE 8080 。该指令不会自动将端口映射到宿主机。 USER ：设置后续构建指令以及容器运行时默认使用的用户，例如 USER app 。 CMD [\" \", \" \"] ：设置容器启动时默认执行的命令，例如 CMD [\"node\", \"./src/index.js\"] 。 build cache 运行docker build创建新镜像时候，docker会按照dockerfile的指令出现顺序，以此执行每一条指令，并为每一条指令创建一个镜像层 对于每一条指令，Docker 都会检查是否能够复用之前构建时产生的结果。如果 Docker 发现之前已经执行过相同或类似的指令，就不需要再次执行，而是直接使用缓存中的结果。 第五部分：网络与存储 存储：数据持久化 ( v) 把宿主机目录和容器目录进行绑定。 如果不挂载，容器删除后数据就会消失。 1. 绑定挂载 (Bind Mount) 2. 命名挂载 (Named Volume) 由 Docker 管理的存储空间，通常位于 /var/lib/docker/volumes/ 。 卷管理常用指令： 网络 (Networks) bridge 桥接模式 Docker 每个容器采用 bridge 桥接模式连接，每一个容器分配一个内部的 IP 地址（一般是 172.17 开头）。内部子网里面，容器可以通过内部 IP 或容器名互相访问。 host 模式 Host 模式下，Docker 容器直接共享宿主机网络，无需 p 参数进行端口映射。 第六部分：容器编排 (Compose) Docker Compose 使用 YAML 文件管理多个容器，定义它们如何协同工作。 One best practice for containers is that each container should do one thing and do it well. 常用指令 第七部分：急救工具箱与运维 日志查看 (Logs) 容器起不来？第一时间看日志！ 进入容器内部 (Exec) 在容器内部执行 Linux 命令，用于深入调试。 清理空间 Docker 很吃硬盘，定期清理无用镜像和容器。 第八部分：原理与进阶 Docker 原理 利用 Linux 内核的两大原生功能，实现容器化： 1. Cgroups ：用来限制和隔离进程的资源使用，为每个容器设定 CPU、内存、网络带宽等资源的使用上限。 2. Namespaces ：用来隔离进程的资源视图，使得容器只能看到自己内部的进程 ID、网络资源和文件目录。 容器本质上还是一个特殊的进程。",
+    "html": "<p><a href=\"https://www.bilibili.com/video/BV1THKyzBER6/?spm_id_from=333.1007.top_right_bar_window_default_collection.content.click&vd_source=8adfcf78eabf734b81a1d808df35a04d\">40分钟的Docker实战攻略，一期视频精通Docker_哔哩哔哩_bilibili</a></p>\n<p><a href=\"https://www.bilibili.com/video/BV1k1jc6EEqe/?spm_id_from=333.788.top_right_bar_window_history.content.click&vd_source=8adfcf78eabf734b81a1d808df35a04d\">B站应该没有这么细致的docker容器教学视频，从零基础入门到实战，不妨来看看_哔哩哔哩_bilibili</a></p>\n<p><a href=\"https://docs.docker.com/get-started/\">Get started | Docker Docs</a></p>\n<h1 id=\"docker-学习笔记\">Docker 学习笔记</h1>\n<h2 id=\"目录\">目录</h2>\n<ul>\n<li><a href=\"#%E9%80%9F%E6%9F%A5%E8%A1%A8%E6%97%A5%E5%B8%B8%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4\">速查表：日常开发常用指令</a></li>\n<li><a href=\"#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E7%90%86%E8%A7%A3-docker\">第一部分：理解 Docker</a></li>\n<li><a href=\"#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%E5%8D%95%E4%BA%BA%E6%9C%AC%E5%9C%B0%E6%9C%80%E5%B0%8F%E9%97%AD%E7%8E%AF\">第二部分：单人本地最小闭环</a></li>\n<li><a href=\"#%E7%AC%AC%E4%B8%89%E9%83%A8%E5%88%86%E5%AE%B9%E5%99%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86\">第三部分：容器生命周期管理</a></li>\n<li><a href=\"#%E7%AC%AC%E5%9B%9B%E9%83%A8%E5%88%86%E9%95%9C%E5%83%8F%E7%AE%A1%E7%90%86%E4%B8%8E-dockerfile\">第四部分：镜像管理与 Dockerfile</a></li>\n<li><a href=\"#%E7%AC%AC%E4%BA%94%E9%83%A8%E5%88%86%E7%BD%91%E7%BB%9C%E4%B8%8E%E5%AD%98%E5%82%A8\">第五部分：网络与存储</a></li>\n<li><a href=\"#%E7%AC%AC%E5%85%AD%E9%83%A8%E5%88%86%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92-compose\">第六部分：容器编排 (Compose)</a></li>\n<li><a href=\"#%E7%AC%AC%E4%B8%83%E9%83%A8%E5%88%86%E6%80%A5%E6%95%91%E5%B7%A5%E5%85%B7%E7%AE%B1%E4%B8%8E%E8%BF%90%E7%BB%B4\">第七部分：急救工具箱与运维</a></li>\n<li><a href=\"#%E7%AC%AC%E5%85%AB%E9%83%A8%E5%88%86%E5%8E%9F%E7%90%86%E4%B8%8E%E8%BF%9B%E9%98%B6\">第八部分：原理与进阶</a></li>\n</ul>\n<hr>\n<h1 id=\"速查表日常开发常用指令\">速查表：日常开发常用指令</h1>\n<h2 id=\"0-安装与配置只需一次\">0. 安装与配置（只需一次）</h2>\n<pre><code class=\"language-bash\"># 腾讯云/Ubuntu 安装\nsudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y\n\n# 验证安装\ndocker --version\ndocker compose version\n</code></pre>\n<p>→ 详见 <a href=\"#%E5%AE%89%E8%A3%85\">第二部分：安装</a></p>\n<h2 id=\"1-镜像操作\">1. 镜像操作</h2>\n<pre><code class=\"language-bash\">docker pull nginx:latest                 # 拉取镜像\ndocker images                            # 列出本地镜像\ndocker rmi &lt;image-id&gt;                    # 删除镜像\ndocker system prune -f                   # 清理所有未使用的镜像、容器和网络\ndocker build -t [镜像名] [构建上下文路径]  # 构建一个docker镜像， -t 指定一个名称\n\t\t\t\t\t\t\t\t      # . 构建上下文路径，告诉 Docker 以当前目录为基础，去里面找 Dockerfile 和相关文件\ndoecker push DOCKER_USERNAME/getting-started-todo-app # 推送image到hub\n</code></pre>\n<p>→ 详见 <a href=\"#%E9%95%9C%E5%83%8F%E7%AE%A1%E7%90%86-images\">第四部分：镜像管理</a></p>\n<h2 id=\"2-容器运行最高频\">2. 容器运行（最高频）</h2>\n<pre><code class=\"language-bash\">docker run -d --name my-app -p 8080:80 nginx   # 后台运行并映射端口\ndocker run -e MYSQL_ROOT_PASSWORD=123 mysql    # 传入环境变量\ndocker run -v /host/path:/container/path nginx # 挂载数据卷\ndocker ps                                      # 查看运行中的容器\ndocker ps -a                                   # 查看所有容器（含已停止）\n</code></pre>\n<p>→ 详见 <a href=\"#run%E5%88%9B%E5%BB%BA%E5%B9%B6%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8\">第三部分：容器运行</a></p>\n<h2 id=\"3-运维与调试\">3. 运维与调试</h2>\n<pre><code class=\"language-bash\">docker logs &lt;container-name&gt;               # 查看日志\ndocker logs &lt;container-name&gt; -f            # 实时滚动查看日志\ndocker exec -it &lt;container-name&gt; /bin/sh   # 进入容器内部调试\ndocker stop/start/restart &lt;container-name&gt; # 启停容器\ndocker rm &lt;container-name&gt;                 # 删除容器\n</code></pre>\n<p>→ 详见 <a href=\"#%E7%AC%AC%E4%B8%83%E9%83%A8%E5%88%86%E6%80%A5%E6%95%91%E5%B7%A5%E5%85%B7%E7%AE%B1%E4%B8%8E%E8%BF%90%E7%BB%B4\">第七部分：急救工具箱</a></p>\n<h2 id=\"4-编排与网络\">4. 编排与网络</h2>\n<pre><code class=\"language-bash\">docker compose up -d                       # 启动编排服务\ndocker compose down                        # 停止并删除服务\ndocker compose watch                       # 监听项目源代码更改，自动更新运行中的容器服务\ndocker network create my-net               # 创建自定义网络\ndocker volume list                         # 查看所有数据卷\n</code></pre>\n<p>→ 详见 <a href=\"#%E7%AC%AC%E5%85%AD%E9%83%A8%E5%88%86%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92-compose\">第六部分：容器编排</a> · <a href=\"#bridge%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F\">第五部分：网络</a></p>\n<hr>\n<h1 id=\"第一部分理解-docker\">第一部分：理解 Docker</h1>\n<h2 id=\"docker-的设计理念\">Docker 的设计理念</h2>\n<p>Docker 引入了**“轻量级虚拟机快递员”**的隐喻。你的目标是把“包裹”（应用代码）和“环境”（系统库、依赖）一起打包成一个标准化的单元（镜像），扔给快递员（Docker Engine），让他送到任何服务器上都能直接跑起来。</p>\n<p>基于这种设计，Docker 解决了三个核心痛点：</p>\n<ul>\n<li><strong>解决“在我电脑上能跑”的问题</strong>：通过操作系统层面的虚拟化，实现环境隔离与一致性。</li>\n<li><strong>极速启动与轻量级</strong>：相比传统虚拟机，Docker 容器共享宿主机内核，秒级启动，资源占用极低。</li>\n<li><strong>标准化交付</strong>：一次构建，到处运行（Build Once, Run Anywhere）。</li>\n</ul>\n<h2 id=\"核心概念类比\">核心概念类比</h2>\n<table>\n<thead>\n<tr>\n<th>概念</th>\n<th>英文</th>\n<th>类比含义</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><strong>镜像</strong></td>\n<td>Image</td>\n<td>“程序安装包”或“类”，是只读的模板</td>\n</tr>\n<tr>\n<td><strong>容器</strong></td>\n<td>Container</td>\n<td>“正在运行的软件”或“实例”，是镜像跑起来后的动态环境</td>\n</tr>\n<tr>\n<td><strong>Dockerfile</strong></td>\n<td>Dockerfile</td>\n<td>“制作图纸”，列出了镜像是如何一步步构建出来的</td>\n</tr>\n<tr>\n<td><strong>仓库</strong></td>\n<td>Registry</td>\n<td>“应用商店”，存放镜像的地方（主要是 Docker Hub）</td>\n</tr>\n</tbody></table>\n<blockquote>\n<p><strong>关系总结</strong>：我们用 <strong>Dockerfile</strong> 制作出 <strong>镜像</strong>，把镜像存到 <strong>仓库</strong>，最后通过 <code>docker run</code> 把镜像变成 <strong>容器</strong> 跑起来。</p>\n</blockquote>\n<h2 id=\"docker-与虚拟机的区别\">Docker 与虚拟机的区别</h2>\n<p>用容器化技术，给应用程序封装独立的运行环境。Docker 容器之间共享一个系统内核，而每个虚拟机都包含一个操作系统的完整内核。因此，Docker 容器比虚拟机更加轻量级，启动速度更快。</p>\n<p><img src=\"/images/review/docker-learning-notes/image-20260625200410037.png\" alt=\"Docker vs VM\">\n<img src=\"/images/review/docker-learning-notes/image-20260625200438361.png\" alt=\"VM 结构\"></p>\n<hr>\n<h1 id=\"第二部分单人本地最小闭环\">第二部分：单人本地最小闭环</h1>\n<p>这一部分的目标：走完 <code>install → pull → run → inspect</code> 的完整循环，让你能独立用 Docker 跑起一个服务。</p>\n<h2 id=\"安装\">安装</h2>\n<h3 id=\"腾讯云-ubuntu-安装流程\">腾讯云/Ubuntu 安装流程</h3>\n<ol>\n<li>清理可能冲突的包</li>\n</ol>\n<pre><code class=\"language-bash\">sudo apt remove $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)\n</code></pre>\n<ol start=\"2\">\n<li>更新系统包索引并安装依赖</li>\n</ol>\n<pre><code class=\"language-bash\">sudo apt update\nsudo apt install ca-certificates curl -y\nsudo install -m 0755 -d /etc/apt/keyrings\n</code></pre>\n<ol start=\"3\">\n<li>导入 Docker GPG 密钥（使用腾讯云镜像）</li>\n</ol>\n<pre><code class=\"language-bash\">sudo curl -fsSL https://mirrors.cloud.tencent.com/docker-ce/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc\n</code></pre>\n<ol start=\"4\">\n<li>添加 Docker APT 源</li>\n</ol>\n<pre><code class=\"language-bash\">sudo tee /etc/apt/sources.list.d/docker.sources &lt;&lt;EOF\nTypes: deb\nURIs: https://mirrors.cloud.tencent.com/docker-ce/linux/ubuntu\nSuites: noble\nComponents: stable\nArchitectures: amd64\nSigned-By: /etc/apt/keyrings/docker.asc\nEOF\n</code></pre>\n<ol start=\"5\">\n<li>安装 Docker 及其核心组件</li>\n</ol>\n<pre><code class=\"language-bash\">sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y\ndocker --version\n</code></pre>\n<h2 id=\"第一次运行hello-world\">第一次运行：Hello World</h2>\n<pre><code class=\"language-bash\">docker run hello-world\n</code></pre>\n<p>看到 &quot;Hello from Docker!&quot; 就算通关。这证明你的 Docker Engine 已经正常工作，并能从 Docker Hub 拉取镜像。</p>\n<hr>\n<h1 id=\"第三部分容器生命周期管理\">第三部分：容器生命周期管理</h1>\n<h2 id=\"run创建并运行容器\">run：创建并运行容器</h2>\n<p>这是 Docker 最核心的指令。如果本地没有镜像，它会自动先执行 <code>pull</code>。</p>\n<pre><code class=\"language-bash\">sudo docker run nginx\n</code></pre>\n<p><img src=\"/images/review/docker-learning-notes/image-20260627174812850.png\" alt=\"Run 示例\"></p>\n<h3 id=\"常用参数详解\">常用参数详解</h3>\n<h4 id=\"d后台运行-detached-mode\">-d：后台运行 (Detached mode)</h4>\n<pre><code class=\"language-bash\">sudo docker run -d nginx\n</code></pre>\n<p><img src=\"/images/review/docker-learning-notes/image-20260627172922129.png\" alt=\"Detached Mode\"></p>\n<h4 id=\"p端口映射-port\">-p：端口映射 (Port)</h4>\n<p>每个 Docker 容器都运行在一个独立的网络环境中，默认情况下外部无法访问。我们需要配置 <code>-p</code> 将宿主机的端口转发到容器内部。</p>\n<pre><code class=\"language-bash\">sudo docker run -p 80:80 nginx\n# 宿主机端口:容器内端口\n</code></pre>\n<img src=\"/images/review/docker-learning-notes/image-20260628093953228.png\" alt=\"Port Mapping\" style=\"zoom:50%;\" />\n<img src=\"/images/review/docker-learning-notes/image-20260628094040678.png\" alt=\"Port Forwarding\" style=\"zoom:50%;\" /><h4 id=\"e环境变量-environment\">-e：环境变量 (Environment)</h4>\n<p>在启动时传入配置信息（如数据库密码）。具体参数需查阅 Docker Hub 官方文档。</p>\n<pre><code class=\"language-bash\">sudo docker run -e MYSQL_ROOT_PASSWORD=123456 mysql\n</code></pre>\n<p><img src=\"/images/review/docker-learning-notes/image-20260628095529357.png\" alt=\"Env Vars\"></p>\n<h4 id=\"name自定义容器名字\">--name：自定义容器名字</h4>\n<p>容器的名字和容器 ID 是等价的，但名字更好记。</p>\n<pre><code class=\"language-bash\">sudo docker run --name my-nginx -d nginx\n</code></pre>\n<h4 id=\"restart重启策略\">--restart：重启策略</h4>\n<pre><code class=\"language-bash\">--restart always         # 容器停止之后总是重启\n--restart unless-stopped # 除非手动停止，否则总是重启\n</code></pre>\n<h4 id=\"it-rm临时调试\">-it &amp; --rm：临时调试</h4>\n<pre><code class=\"language-bash\">-it   # 进入宿主机内部进行交互式调试\n--rm  # 容器停止运行时，自动把容器删除（适合一次性测试）\n</code></pre>\n<p><img src=\"/images/review/docker-learning-notes/image-20260628100029890.png\" alt=\"Debug Mode\"></p>\n<h2 id=\"运维与状态查询\">运维与状态查询</h2>\n<h3 id=\"ps查看进程状态\">ps：查看进程状态</h3>\n<pre><code class=\"language-bash\">sudo docker ps     # 查看正在运行的容器\nsudo docker ps -a  # 查看所有容器（包含已停止的）\n</code></pre>\n<p><img src=\"/images/review/docker-learning-notes/image-20260627172848564.png\" alt=\"PS Output\"></p>\n<h3 id=\"start-stop-create启停控制\">start/stop/create：启停控制</h3>\n<ul>\n<li><code>create</code>：只创建容器但不启动。</li>\n<li><code>start/stop/restart</code>：启动、停止或重启已经创建的容器。</li>\n</ul>\n<p><img src=\"/images/review/docker-learning-notes/image-20260628100525689.png\" alt=\"Start/Stop\"></p>\n<hr>\n<h1 id=\"第四部分镜像管理与-dockerfile\">第四部分：镜像管理与 Dockerfile</h1>\n<h2 id=\"镜像管理-images\">镜像管理 (Images)</h2>\n<h3 id=\"pull拉取镜像\">pull：拉取镜像</h3>\n<pre><code class=\"language-bash\">docker pull registry/namespace/tag:标签（版本号）\n# 简化后就是: docker pull nginx\n</code></pre>\n<blockquote>\n<p><strong>跨平台支持</strong>：<code>docker pull --platform=xxx nginx</code>。一般情况下默认拉取最适合的 CPU 架构。</p>\n</blockquote>\n<h3 id=\"images-rmi列出与删除\">images &amp; rmi：列出与删除</h3>\n<pre><code class=\"language-bash\">sudo docker images          # 列出所有下载的镜像\nsudo docker rmi nginx:latest # 删除指定的镜像\n</code></pre>\n<h2 id=\"dockerfile-制作\">Dockerfile 制作</h2>\n<p>Dockerfile 是镜像的构建蓝图。</p>\n<p><a href=\"https://www.bilibili.com/video/BV1THKyzBER6/?spm_id_from=333.1391.0.0&vd_source=8adfcf78eabf734b81a1d808df35a04d\">40分钟的Docker实战攻略，一期视频精通Docker_哔哩哔哩_bilibili</a> 26:33</p>\n<blockquote>\n<p>Container images are composed of layers. And each of these layers, once created, are immutable. </p>\n</blockquote>\n<p>Dockerfile 通常会按照以下步骤编写：</p>\n<ol>\n<li>确定基础镜像。</li>\n<li>安装应用程序依赖。</li>\n<li>复制相关源代码和二进制文件。</li>\n<li>配置最终镜像。</li>\n</ol>\n<h3 id=\"dockerfile-常见指令\">Dockerfile 常见指令</h3>\n<ul>\n<li><code>FROM &lt;image&gt;</code>：指定构建镜像时使用的基础镜像，例如 <code>FROM node:22-alpine</code>。</li>\n<li><code>WORKDIR &lt;path&gt;</code>：设置镜像中的工作目录，后续命令会在该目录下执行，例如 <code>WORKDIR /app</code>。</li>\n<li><code>COPY &lt;host-path&gt; &lt;image-path&gt;</code>：将宿主机中的文件或目录复制到镜像中，例如 <code>COPY . /app</code>。</li>\n<li><code>RUN &lt;command&gt;</code>：在构建镜像时执行指定命令，通常用于安装软件或应用依赖，例如 <code>RUN yarn install --production</code>。</li>\n<li><code>ENV &lt;name&gt; &lt;value&gt;</code>：设置容器运行时可以使用的环境变量，例如 <code>ENV APP_ENV production</code>。</li>\n<li><code>EXPOSE &lt;port-number&gt;</code>：声明容器应用计划使用的端口，例如 <code>EXPOSE 8080</code>。该指令不会自动将端口映射到宿主机。</li>\n<li><code>USER &lt;user-or-uid&gt;</code>：设置后续构建指令以及容器运行时默认使用的用户，例如 <code>USER app</code>。</li>\n<li><code>CMD [&quot;&lt;command&gt;&quot;, &quot;&lt;arg1&gt;&quot;]</code>：设置容器启动时默认执行的命令，例如 <code>CMD [&quot;node&quot;, &quot;./src/index.js&quot;]</code>。</li>\n</ul>\n<h3 id=\"build-cache\">build cache</h3>\n<p>运行docker build创建新镜像时候，docker会按照dockerfile的指令出现顺序，以此执行每一条指令，并为每一条指令创建一个镜像层</p>\n<p>对于每一条指令，Docker 都会检查是否能够复用之前构建时产生的结果。如果 Docker 发现之前已经执行过相同或类似的指令，就不需要再次执行，而是直接使用缓存中的结果。</p>\n<h1 id=\"第五部分网络与存储\">第五部分：网络与存储</h1>\n<h2 id=\"存储数据持久化-v\">存储：数据持久化 (-v)</h2>\n<p>把宿主机目录和容器目录进行绑定。<strong>如果不挂载，容器删除后数据就会消失。</strong></p>\n<h3 id=\"1-绑定挂载-bind-mount\">1. 绑定挂载 (Bind Mount)</h3>\n<pre><code class=\"language-bash\">-v 宿主机绝对路径:容器内路径\n</code></pre>\n<p><img src=\"/images/review/docker-learning-notes/image-20260628094623806.png\" alt=\"Bind Mount\"></p>\n<h3 id=\"2-命名挂载-named-volume\">2. 命名挂载 (Named Volume)</h3>\n<p>由 Docker 管理的存储空间，通常位于 <code>/var/lib/docker/volumes/</code>。</p>\n<pre><code class=\"language-bash\">-v 卷的名字:容器内路径\n</code></pre>\n<p><img src=\"/images/review/docker-learning-notes/image-20260628094953040.png\" alt=\"Named Volume\"></p>\n<p><strong>卷管理常用指令：</strong></p>\n<pre><code class=\"language-bash\">sudo docker volume list      # 展示所有挂载卷\nsudo docker volume rm xxx    # 删除指定的挂载卷\nsudo docker volume prune -a  # 删除所有没有被容器使用的卷\n</code></pre>\n<h2 id=\"网络-networks\">网络 (Networks)</h2>\n<h3 id=\"bridge-桥接模式\">bridge 桥接模式</h3>\n<p>Docker 每个容器采用 bridge 桥接模式连接，每一个容器分配一个内部的 IP 地址（一般是 172.17 开头）。内部子网里面，容器可以通过内部 IP 或容器名互相访问。</p>\n<p><img src=\"/images/review/docker-learning-notes/image-20260628230824771.png\" alt=\"Bridge Network\"></p>\n<pre><code class=\"language-bash\">docker network create network1  # 创建自定义子网\n</code></pre>\n<h3 id=\"host-模式\">host 模式</h3>\n<p>Host 模式下，Docker 容器直接共享宿主机网络，无需 <code>-p</code> 参数进行端口映射。</p>\n<p><img src=\"/images/review/docker-learning-notes/image-20260628232234424.png\" alt=\"Host Network\"></p>\n<hr>\n<h1 id=\"第六部分容器编排-compose\">第六部分：容器编排 (Compose)</h1>\n<p>Docker Compose 使用 YAML 文件管理多个容器，定义它们如何协同工作。</p>\n<blockquote>\n<p>One best practice for containers is that each container should do one thing and do it well.</p>\n</blockquote>\n<p><img src=\"/images/review/docker-learning-notes/image-20260628233154906.png\" alt=\"Compose Concept\"></p>\n<h3 id=\"常用指令\">常用指令</h3>\n<pre><code class=\"language-bash\"># 启动对应的 yml，创建、启动、网络配置\nsudo docker compose up -d  \n\n# 停止并删除容器\nsudo docker compose down \n\n# 指定不同环境的配置文件\nsudo docker compose -f docker-compose.prod.yaml up -d\n</code></pre>\n<p><img src=\"/images/review/docker-learning-notes/image-20260628234210470.png\" alt=\"Compose Workflow\"></p>\n<hr>\n<h1 id=\"第七部分急救工具箱与运维\">第七部分：急救工具箱与运维</h1>\n<h2 id=\"日志查看-logs\">日志查看 (Logs)</h2>\n<p>容器起不来？第一时间看日志！</p>\n<pre><code class=\"language-bash\">sudo docker logs 容器id/名字\nsudo docker logs 容器id/名字 -f  # 滚动查看日志，动态更新\n</code></pre>\n<h2 id=\"进入容器内部-exec\">进入容器内部 (Exec)</h2>\n<p>在容器内部执行 Linux 命令，用于深入调试。</p>\n<pre><code class=\"language-bash\">sudo docker exec 容器id linux命令\nsudo docker exec -it 容器id /bin/sh # 进入容器终端\n</code></pre>\n<p><img src=\"/images/review/docker-learning-notes/image-20260628224726725.png\" alt=\"Exec Example\"></p>\n<h2 id=\"清理空间\">清理空间</h2>\n<p>Docker 很吃硬盘，定期清理无用镜像和容器。</p>\n<pre><code class=\"language-bash\">docker system prune -f\n</code></pre>\n<hr>\n<h1 id=\"第八部分原理与进阶\">第八部分：原理与进阶</h1>\n<h2 id=\"docker-原理\">Docker 原理</h2>\n<p>利用 Linux 内核的两大原生功能，实现容器化：</p>\n<ol>\n<li><strong>Cgroups</strong>：用来限制和隔离进程的资源使用，为每个容器设定 CPU、内存、网络带宽等资源的使用上限。</li>\n<li><strong>Namespaces</strong>：用来隔离进程的资源视图，使得容器只能看到自己内部的进程 ID、网络资源和文件目录。</li>\n</ol>\n<p>容器本质上还是一个特殊的进程。</p>\n<img src=\"/images/review/docker-learning-notes/image-20260628212104993.png\" alt=\"Docker Architecture\" style=\"zoom: 50%;\" />\n![image-20260714092738747](/images/review/docker-learning-notes/image-20260714092738747.png)<p><img src=\"/images/review/docker-learning-notes/image-20260714092823094.png\" alt=\"image-20260714092823094\"></p>\n",
+    "toc": [
+      {
+        "id": "docker-学习笔记",
+        "level": 1,
+        "title": "Docker 学习笔记"
+      },
+      {
+        "id": "目录",
+        "level": 2,
+        "title": "目录"
+      },
+      {
+        "id": "速查表日常开发常用指令",
+        "level": 1,
+        "title": "速查表：日常开发常用指令"
+      },
+      {
+        "id": "0-安装与配置只需一次",
+        "level": 2,
+        "title": "0. 安装与配置（只需一次）"
+      },
+      {
+        "id": "1-镜像操作",
+        "level": 2,
+        "title": "1. 镜像操作"
+      },
+      {
+        "id": "2-容器运行最高频",
+        "level": 2,
+        "title": "2. 容器运行（最高频）"
+      },
+      {
+        "id": "3-运维与调试",
+        "level": 2,
+        "title": "3. 运维与调试"
+      },
+      {
+        "id": "4-编排与网络",
+        "level": 2,
+        "title": "4. 编排与网络"
+      },
+      {
+        "id": "第一部分理解-docker",
+        "level": 1,
+        "title": "第一部分：理解 Docker"
+      },
+      {
+        "id": "docker-的设计理念",
+        "level": 2,
+        "title": "Docker 的设计理念"
+      },
+      {
+        "id": "核心概念类比",
+        "level": 2,
+        "title": "核心概念类比"
+      },
+      {
+        "id": "docker-与虚拟机的区别",
+        "level": 2,
+        "title": "Docker 与虚拟机的区别"
+      },
+      {
+        "id": "第二部分单人本地最小闭环",
+        "level": 1,
+        "title": "第二部分：单人本地最小闭环"
+      },
+      {
+        "id": "安装",
+        "level": 2,
+        "title": "安装"
+      },
+      {
+        "id": "腾讯云-ubuntu-安装流程",
+        "level": 3,
+        "title": "腾讯云/Ubuntu 安装流程"
+      },
+      {
+        "id": "第一次运行hello-world",
+        "level": 2,
+        "title": "第一次运行：Hello World"
+      },
+      {
+        "id": "第三部分容器生命周期管理",
+        "level": 1,
+        "title": "第三部分：容器生命周期管理"
+      },
+      {
+        "id": "run创建并运行容器",
+        "level": 2,
+        "title": "run：创建并运行容器"
+      },
+      {
+        "id": "常用参数详解",
+        "level": 3,
+        "title": "常用参数详解"
+      },
+      {
+        "id": "d后台运行-detached-mode",
+        "level": 4,
+        "title": "-d：后台运行 (Detached mode)"
+      },
+      {
+        "id": "p端口映射-port",
+        "level": 4,
+        "title": "-p：端口映射 (Port)"
+      },
+      {
+        "id": "e环境变量-environment",
+        "level": 4,
+        "title": "-e：环境变量 (Environment)"
+      },
+      {
+        "id": "name自定义容器名字",
+        "level": 4,
+        "title": "--name：自定义容器名字"
+      },
+      {
+        "id": "restart重启策略",
+        "level": 4,
+        "title": "--restart：重启策略"
+      },
+      {
+        "id": "it-rm临时调试",
+        "level": 4,
+        "title": "-it &amp; --rm：临时调试"
+      },
+      {
+        "id": "运维与状态查询",
+        "level": 2,
+        "title": "运维与状态查询"
+      },
+      {
+        "id": "ps查看进程状态",
+        "level": 3,
+        "title": "ps：查看进程状态"
+      },
+      {
+        "id": "start-stop-create启停控制",
+        "level": 3,
+        "title": "start/stop/create：启停控制"
+      },
+      {
+        "id": "第四部分镜像管理与-dockerfile",
+        "level": 1,
+        "title": "第四部分：镜像管理与 Dockerfile"
+      },
+      {
+        "id": "镜像管理-images",
+        "level": 2,
+        "title": "镜像管理 (Images)"
+      },
+      {
+        "id": "pull拉取镜像",
+        "level": 3,
+        "title": "pull：拉取镜像"
+      },
+      {
+        "id": "images-rmi列出与删除",
+        "level": 3,
+        "title": "images &amp; rmi：列出与删除"
+      },
+      {
+        "id": "dockerfile-制作",
+        "level": 2,
+        "title": "Dockerfile 制作"
+      },
+      {
+        "id": "dockerfile-常见指令",
+        "level": 3,
+        "title": "Dockerfile 常见指令"
+      },
+      {
+        "id": "build-cache",
+        "level": 3,
+        "title": "build cache"
+      },
+      {
+        "id": "第五部分网络与存储",
+        "level": 1,
+        "title": "第五部分：网络与存储"
+      },
+      {
+        "id": "存储数据持久化-v",
+        "level": 2,
+        "title": "存储：数据持久化 (-v)"
+      },
+      {
+        "id": "1-绑定挂载-bind-mount",
+        "level": 3,
+        "title": "1. 绑定挂载 (Bind Mount)"
+      },
+      {
+        "id": "2-命名挂载-named-volume",
+        "level": 3,
+        "title": "2. 命名挂载 (Named Volume)"
+      },
+      {
+        "id": "网络-networks",
+        "level": 2,
+        "title": "网络 (Networks)"
+      },
+      {
+        "id": "bridge-桥接模式",
+        "level": 3,
+        "title": "bridge 桥接模式"
+      },
+      {
+        "id": "host-模式",
+        "level": 3,
+        "title": "host 模式"
+      },
+      {
+        "id": "第六部分容器编排-compose",
+        "level": 1,
+        "title": "第六部分：容器编排 (Compose)"
+      },
+      {
+        "id": "常用指令",
+        "level": 3,
+        "title": "常用指令"
+      },
+      {
+        "id": "第七部分急救工具箱与运维",
+        "level": 1,
+        "title": "第七部分：急救工具箱与运维"
+      },
+      {
+        "id": "日志查看-logs",
+        "level": 2,
+        "title": "日志查看 (Logs)"
+      },
+      {
+        "id": "进入容器内部-exec",
+        "level": 2,
+        "title": "进入容器内部 (Exec)"
+      },
+      {
+        "id": "清理空间",
+        "level": 2,
+        "title": "清理空间"
+      },
+      {
+        "id": "第八部分原理与进阶",
+        "level": 1,
+        "title": "第八部分：原理与进阶"
+      },
+      {
+        "id": "docker-原理",
+        "level": 2,
+        "title": "Docker 原理"
+      }
+    ]
+  },
+  {
     "slug": "skills-behavior-system",
     "title": "Skills：小而准的行为系统",
     "date": "2026-07-24",

@@ -377,3 +377,17 @@ html[data-theme="light"] .markdown-body th, html[data-theme="light"] .markdown-b
 .article-toc-sidebar .toc-level-4 > .toc-row .toc-link, .article-toc-sidebar .toc-level-5 > .toc-row .toc-link, .article-toc-sidebar .toc-level-6 > .toc-row .toc-link { color: var(--muted); font-size: 11px; }
 html[data-theme="light"] .article-toc-sidebar .toc-link:hover, html[data-theme="light"] .article-toc-sidebar .toc-link.active { color: #fff; }
 @media (max-width: 1000px) { .article-toc-sidebar .toc-content { max-height: 46vh; } }
+
+
+/* Keep indentation structural: nested branches own the offset, not heading levels. */
+.article-toc-sidebar .toc-level-1,
+.article-toc-sidebar .toc-level-2,
+.article-toc-sidebar .toc-level-3,
+.article-toc-sidebar .toc-level-4,
+.article-toc-sidebar .toc-level-5,
+.article-toc-sidebar .toc-level-6 { padding-left: 0; }
+.article-toc-sidebar .toc-item > ol { margin: 2px 0 3px 8px; padding-left: 8px; }
+.article-toc-sidebar .toc-link { overflow: visible; padding: 6px 7px; text-overflow: clip; white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+.article-toc-sidebar .toc-toggle,
+.article-toc-sidebar .toc-spacer { height: auto; min-height: 30px; }
+.article-toc-sidebar .toc-toggle { align-self: stretch; }

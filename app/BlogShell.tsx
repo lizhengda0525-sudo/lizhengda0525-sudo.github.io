@@ -141,23 +141,65 @@ function Aside({ onSearch, toc }: { onSearch: () => void; toc?: BlogPost["toc"] 
   </aside>;
 }
 
-function ArticleToc({ toc }: { toc: BlogPost["toc"] }) {
-  const [expanded, setExpanded] = useState<Record<string, boolean>>(() => Object.fromEntries(toc.map((item) => [item.id, item.level <= 2])));
-  const hasChildren = (index: number) => toc[index + 1]?.level > toc[index].level;
-  const isVisible = (index: number) => {
-    const level = toc[index].level;
-    for (let parent = index - 1; parent >= 0; parent -= 1) {
-      if (toc[parent].level < level) return expanded[toc[parent].id] !== false;
-    }
-    return true;
-  };
+type TocItem = BlogPost["toc"][number];
+type TocNode = TocItem & { children: TocNode[] };
 
-  return <nav className="article-toc article-toc-sidebar" aria-label={"\u6587\u7ae0\u76ee\u5f55"}>
-    <strong>{"\u76ee\u5f55"}</strong>
-    <div className="toc-tree">{toc.map((item, index) => isVisible(index) && <div className={`toc-item toc-level-${item.level}`} key={item.id}>
-      {hasChildren(index) && <button type="button" className="toc-toggle" onClick={() => setExpanded((current) => ({ ...current, [item.id]: !current[item.id] }))} aria-label={expanded[item.id] === false ? "\u5c55\u5f00\u5b50\u76ee\u5f55" : "\u6298\u53e0\u5b50\u76ee\u5f55"} aria-expanded={expanded[item.id] !== false}>{expanded[item.id] === false ? "+" : "-"}</button>}
-      <a href={`#${item.id}`}>{item.title}</a>
-    </div>)}</div>
+function buildTocTree(toc: TocItem[]): TocNode[] {
+  const roots: TocNode[] = [];
+  const stack: TocNode[] = [];
+  for (const item of toc) {
+    const node: TocNode = { ...item, children: [] };
+    while (stack.length && stack[stack.length - 1].level >= item.level) stack.pop();
+    if (stack.length) stack[stack.length - 1].children.push(node);
+    else roots.push(node);
+    stack.push(node);
+  }
+  return roots;
+}
+
+function ArticleToc({ toc }: { toc: BlogPost["toc"] }) {
+  const tree = useMemo(() => buildTocTree(toc), [toc]);
+  const [activeId, setActiveId] = useState(toc[0]?.id ?? "");
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(() => Object.fromEntries(toc.map((item) => [item.id, item.level <= 2])));
+
+  useEffect(() => {
+    let frame = 0;
+    const updateActive = () => {
+      const current = toc.reduce<string>((last, item) => document.getElementById(item.id)?.getBoundingClientRect().top! <= 150 ? item.id : last, toc[0]?.id ?? "");
+      setActiveId(current);
+    };
+    const onScroll = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(updateActive); };
+    updateActive();
+    addEventListener("scroll", onScroll, { passive: true });
+    return () => { cancelAnimationFrame(frame); removeEventListener("scroll", onScroll); };
+  }, [toc]);
+
+  useEffect(() => {
+    const index = toc.findIndex((item) => item.id === activeId);
+    if (index < 0) return;
+    const ancestors: string[] = [];
+    let requiredLevel = toc[index].level;
+    for (let parent = index - 1; parent >= 0; parent -= 1) {
+      if (toc[parent].level < requiredLevel) { ancestors.push(toc[parent].id); requiredLevel = toc[parent].level; }
+    }
+    if (ancestors.length) setExpanded((current) => ({ ...current, ...Object.fromEntries(ancestors.map((id) => [id, true])) }));
+  }, [activeId, toc]);
+
+  const renderNodes = (nodes: TocNode[]) => <ol>{nodes.map((node) => {
+    const hasChildren = node.children.length > 0;
+    const isOpen = expanded[node.id] !== false;
+    return <li className={`toc-item toc-level-${node.level}`} key={node.id}>
+      <div className="toc-row">
+        {hasChildren ? <button type="button" className="toc-toggle" onClick={() => setExpanded((current) => ({ ...current, [node.id]: !isOpen }))} aria-label={isOpen ? "Collapse section" : "Expand section"} aria-expanded={isOpen}>{isOpen ? "-" : "+"}</button> : <span className="toc-spacer" />}
+        <a className={`toc-link ${activeId === node.id ? "active" : ""}`} href={`#${node.id}`} onClick={() => setActiveId(node.id)}>{node.title}</a>
+      </div>
+      {hasChildren && isOpen && renderNodes(node.children)}
+    </li>;
+  })}</ol>;
+
+  return <nav className="article-toc article-toc-sidebar" aria-label="Article contents">
+    <div className="toc-heading"><strong>{"\u76ee\u5f55"}</strong><span>{toc.length}</span></div>
+    <div className="toc-content">{renderNodes(tree)}</div>
   </nav>;
 }
 

@@ -195,6 +195,9 @@ function ArticleToc({ toc }: { toc: BlogPost["toc"] }) {
     return <li className={`toc-item toc-level-${node.level}`} key={node.id}>
       <div className="toc-row">
         <span className="toc-number">{node.outline}.</span>
+        {node.children.length > 0
+          ? <button type="button" className="toc-toggle" onClick={() => setExpanded((current) => ({ ...current, [node.id]: !isOpen }))} aria-label={`${isOpen ? "Collapse" : "Expand"} ${node.title}`} aria-expanded={isOpen}>{isOpen ? "\u2212" : "+"}</button>
+          : <span className="toc-spacer" aria-hidden="true" />}
         <a className={`toc-link ${activeId === node.id ? "active" : ""}`} href={`#${node.id}`} onClick={() => setActiveId(node.id)}>{node.title}</a>
       </div>
       {node.children.length > 0 && isOpen && renderNodes(node.children)}

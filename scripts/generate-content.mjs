@@ -84,13 +84,17 @@ function arrayValue(value) {
   return value ? [String(value)] : [];
 }
 
-const coverMap = {
-  "git-learning-notes": "/images/review/git-learning-notes/image-20260519214154717.webp",
-  "gpt-5-6": "/images/site/study-hero.webp",
-  "fastapi-basics": "/images/site/study-hero.webp",
-  "agent-blog-tutorial": "/images/site/study-hero.webp",
-  hello: "/images/site/study-hero.webp",
-};
+const articleCovers = [
+  "/images/site/covers/article-cover-1.jpeg",
+  "/images/site/covers/article-cover-2.jpeg",
+  "/images/site/covers/article-cover-3.jpeg",
+  "/images/site/covers/article-cover-4.jpeg",
+];
+
+function coverFor(slug) {
+  const hash = [...slug].reduce((value, character) => ((value * 31) + character.charCodeAt(0)) | 0, 0);
+  return articleCovers[Math.abs(hash) % articleCovers.length];
+}
 
 const fileNames = (await readdir(postsRoot)).filter((name) => name.endsWith(".md"));
 const posts = [];
@@ -113,7 +117,7 @@ for (const fileName of fileNames) {
     category: categories[0] || "随笔",
     categories: categories.length ? categories : ["随笔"],
     tags,
-    image: coverMap[slug] || "/images/site/study-hero.webp",
+    image: coverFor(slug),
     excerpt: description,
     read: `${Math.max(1, Math.ceil(charCount / 500))} 分钟`,
     wordCount: charCount,

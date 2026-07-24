@@ -47,7 +47,7 @@ test("generated content includes every source post and migrated image", async ()
   assert.equal(imageFiles.filter((name) => name.endsWith(".png")).length, 40);
   assert.equal(imageFiles.filter((name) => name.endsWith(".webp")).length, 40);
   for (const slug of slugs) assert.match(generated, new RegExp(`"slug": "${slug}"`));
-  assert.match(generated, /image-20260519214154717\.webp/);
+  assert.match(generated, /\/images\/site\/covers\/article-cover-[1-4]\.jpeg/);
   assert.match(generated, /FastAPI/);
   assert.match(generated, /Agent/);
 });

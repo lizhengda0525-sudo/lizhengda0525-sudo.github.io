@@ -114,7 +114,7 @@ function renderView(view: View, post: BlogPost | undefined, filterName: string) 
     if (filterName) return <FilteredPage title={`标签：${filterName}`} items={posts.filter((item) => item.tags.includes(filterName))} />;
     return <PageCard><p className="page-kicker">TAG CLOUD</p><h2>标签</h2><div className="tag-cloud">{allTags.map((tag, index) => <Link style={{ fontSize: `${15 + (index % 4) * 4}px` }} href={`/tags?name=${encodeURIComponent(tag)}`} key={tag}>#{tag}</Link>)}</div></PageCard>;
   }
-  if (view === "about") return <PageCard><div className="about-intro"><div className="about-avatar">达</div><div><p className="page-kicker">ABOUT</p><h2>关于这个知识库</h2><p>技术学习、工具实践与持续思考的长期记录。</p></div></div><div className="markdown-body about-markdown" dangerouslySetInnerHTML={{ __html: aboutPage.html }} /></PageCard>;
+  if (view === "about") return <PageCard><div className="about-intro"><div className="about-avatar" role="img" aria-label="????" /><div><p className="page-kicker">ABOUT</p><h2>关于这个知识库</h2><p>技术学习、工具实践与持续思考的长期记录。</p></div></div><div className="markdown-body about-markdown" dangerouslySetInnerHTML={{ __html: aboutPage.html }} /></PageCard>;
   if (!post) return <PageCard><div className="not-found"><span>404</span><h2>这篇文章暂时找不到</h2><Link href="/">返回首页</Link></div></PageCard>;
   return <Article post={post} />;
 }
@@ -133,7 +133,7 @@ function PostCard({ post, reverse }: { post: BlogPost; reverse: boolean }) {
 function Aside({ onSearch, toc }: { onSearch: () => void; toc?: BlogPost["toc"] }) {
   if (toc) return <aside className="article-aside"><ArticleToc toc={toc} /></aside>;
   return <aside>
-    <div className="widget profile-card"><div className="profile-cover" /><div className="avatar">达</div><h3>达</h3><p>技术学习、工具实践与持续思考</p><div className="stats"><Link href="/archives"><strong>{posts.length}</strong><span>文章</span></Link><Link href="/tags"><strong>{allTags.length}</strong><span>标签</span></Link><Link href="/categories"><strong>{allCategories.length}</strong><span>分类</span></Link></div><a className="follow" href="https://github.com/lizhengda0525-sudo" target="_blank" rel="noreferrer">关注我的 GitHub</a></div>
+    <div className="widget profile-card"><div className="profile-cover" /><div className="avatar" role="img" aria-label="????" /><h3>达</h3><p>技术学习、工具实践与持续思考</p><div className="stats"><Link href="/archives"><strong>{posts.length}</strong><span>文章</span></Link><Link href="/tags"><strong>{allTags.length}</strong><span>标签</span></Link><Link href="/categories"><strong>{allCategories.length}</strong><span>分类</span></Link></div><a className="follow" href="https://github.com/lizhengda0525-sudo" target="_blank" rel="noreferrer">关注我的 GitHub</a></div>
     <button className="widget quick-search" onClick={onSearch}><span>⌕</span><div><strong>站内搜索</strong><small>按 ⌘ K 快速唤起</small></div><b>→</b></button>
     <div className="widget announcement"><h3><span>♩</span> 公告</h3><p>欢迎来到达的学习笔记。这里沉淀 AI 工具、后端开发、开发工具和学习记录。</p></div>
     <div className="widget recent"><h3><span>◷</span> 最新文章</h3>{posts.slice(0, 4).map((post) => <Link key={post.slug} href={`/post/${post.slug}`}><i style={{ backgroundImage: `url(${post.image})` }} /><span><strong>{post.title}</strong><small>{post.date}</small></span></Link>)}</div>

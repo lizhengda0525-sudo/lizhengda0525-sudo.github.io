@@ -15,7 +15,7 @@ export const posts: BlogPost[] = [
       "Agent",
       "Prompt Engineering"
     ],
-    "image": "/images/site/study-hero.webp",
+    "image": "/images/site/covers/article-cover-1.jpeg",
     "excerpt": "围绕 GPT-5.6 Sol 的 Agent 定位、核心能力变化，以及提示词从步骤控制转向目标定义的实践笔记。",
     "read": "3 分钟",
     "wordCount": 1487,
@@ -62,7 +62,7 @@ export const posts: BlogPost[] = [
       "版本控制",
       "开发工作流"
     ],
-    "image": "/images/review/git-learning-notes/image-20260519214154717.webp",
+    "image": "/images/site/covers/article-cover-4.jpeg",
     "excerpt": "从 Git 的快照模型、三大工作区域，到分支、合并、远程协作、rebase、急救工具和团队工作流的系统学习笔记。",
     "read": "15 分钟",
     "wordCount": 7053,
@@ -406,7 +406,7 @@ export const posts: BlogPost[] = [
       "教程",
       "自动化写作"
     ],
-    "image": "/images/site/study-hero.webp",
+    "image": "/images/site/covers/article-cover-4.jpeg",
     "excerpt": "手把手教你从零搭建达主编、达审稿、达发布三个 Agent Skill，并用它们完成从学习笔记到博客发布的完整流程。",
     "read": "8 分钟",
     "wordCount": 3561,
@@ -553,7 +553,7 @@ export const posts: BlogPost[] = [
       "Python",
       "异步编程"
     ],
-    "image": "/images/site/study-hero.webp",
+    "image": "/images/site/covers/article-cover-1.jpeg",
     "excerpt": "从零开始学习 FastAPI，掌握 Python 虚拟环境管理、异步编程（async/await）概念，以及基本的 API 开发。",
     "read": "4 分钟",
     "wordCount": 1921,
@@ -668,7 +668,7 @@ export const posts: BlogPost[] = [
     "tags": [
       "随笔"
     ],
-    "image": "/images/site/study-hero.webp",
+    "image": "/images/site/covers/article-cover-3.jpeg",
     "excerpt": "这是我的第一篇学习博客，后续将通过 Agent 协作工作流发布更多学习笔记。",
     "read": "1 分钟",
     "wordCount": 36,
